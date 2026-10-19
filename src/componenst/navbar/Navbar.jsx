@@ -1,23 +1,22 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { logout } from "../../services/authService.jsx";
-function Navbar() {
-  const { isAuthenticated, clearSession } = useAuth();
 
+function Navbar() {
+  const { isAuthenticated, setUser } = useAuth();
   const navigate = useNavigate();
 
   async function handleLogout() {
     try {
       await logout();
-    } catch {
-      // Même si l'API répond par une erreur, on déconnecte côté React
+    } finally {
+      setUser(null);
+      navigate("/connection");
     }
-    clearSession();
-    navigate("/connexion");
   }
 
   return (
-    <header className="navbar">
+    <header className="nafbar">
       <Link to="/" className="logo">
         MaBoutique
       </Link>
@@ -26,11 +25,9 @@ function Navbar() {
         <NavLink to="/" end>
           Catalogue
         </NavLink>
-
         <NavLink to="/panier">
           Panier <span className="cart-count">0</span>
         </NavLink>
-
         {isAuthenticated ? (
           <>
             <NavLink to="/profil">Profil</NavLink>
@@ -39,7 +36,7 @@ function Navbar() {
             </button>
           </>
         ) : (
-          <NavLink to="/connexion" className="btn btn-primary btn-sm">
+          <NavLink to="/connection" className="btn btn-primary btn-sm">
             Connexion
           </NavLink>
         )}
@@ -47,4 +44,5 @@ function Navbar() {
     </header>
   );
 }
+
 export default Navbar;
