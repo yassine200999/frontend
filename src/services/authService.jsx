@@ -24,7 +24,7 @@ export async function createUser(userData) {
   return response.data;
 }
 
-export async function signout() {
+export async function logout() {
   const token = localStorage.getItem("token");
   try {
     if (token) {
