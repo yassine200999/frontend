@@ -17,7 +17,7 @@ function Catalogue() {
     const loadProducts = async () => {
       try {
         const data = await getAllProducts();
-        setProducts(data["list product"] ?? []); // la clé contient un espace
+        setProducts(Array.isArray(data) ? data : data["list product"] ?? []);
       } catch (err) {
         setError(getErrorMessage(err, "Impossible de charger les produits."));
       } finally {
