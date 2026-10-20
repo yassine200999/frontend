@@ -101,7 +101,7 @@ h3 {
 
 /* ---------- 3. Navbar ---------- */
 
-.nafbar {
+.navbar {
     background: var(--white);
     border-bottom: 1px solid var(--border);
     padding: 0 40px;
@@ -119,7 +119,7 @@ h3 {
     color: var(--accent);
 }
 
-.nafbar nav {
+.navbar nav {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -131,7 +131,7 @@ h3 {
 
 /* NavLink de React Router ajoute automatiquement la classe "active" */
 
-.nafbar nav a.active {
+.navbar nav a.active {
     color: var(--accent);
     font-weight: 700;
 }
@@ -512,7 +512,7 @@ input[type="file"] {
 
 /* Bouton "Connexion" dans la navbar : texte blanc même quand le lien est actif */
 
-.nafbar nav a.btn {
+.navbar nav a.btn {
     color: var(--white);
     font-weight: 700;
 }
@@ -688,7 +688,7 @@ table.table {
 /* ---------- 15. Responsive ---------- */
 
 @media (max-width: 720px) {
-    .nafbar {
+    .navbar {
         padding: 12px 20px;
     }
     .hero {
@@ -703,4 +703,21 @@ table.table {
     .sidebar {
         flex: 1 1 100%;
     }
+}
+
+.filters-bar {
+    display: flex;
+    /* les éléments se placent côte à côte */
+    flex-wrap: wrap;
+    /* ils passent à la ligne si l'écran est étroit */
+    align-items: flex-end;
+    /* alignés en bas, bouton compris */
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.filters-bar .form-group {
+    flex: 1 1 180px;
+    /* chaque champ grandit, minimum 180px */
+    margin-bottom: 0;
 }
