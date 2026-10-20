@@ -4,7 +4,7 @@ import ProductImage from "../productedImage/ProductImage";
 function ProductCard({ product }) {
   return (
     <Link to={`/produit/${product.id}`} className="product-card">
-      <ProductImage src={product.images?.[0]} alt={product.name} />
+      <ProductImage src={product.images?.[0]?.image_url} alt={product.name} />
       <div className="body">
         {/* Nom du produit */}
         <span className="name">{product.name}</span>
