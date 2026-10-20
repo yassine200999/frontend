@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import ProductImage from "../productImage/ProductImage";
+import ProductImage from "../productedImage/ProductImage";
 
 function ProductCard({ product }) {
   return (
