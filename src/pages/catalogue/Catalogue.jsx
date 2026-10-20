@@ -34,7 +34,7 @@ function Catalogue() {
 
   // Application des filtres
   const filteredProducts = products.filter((product) => {
-    const matchName = product.name.toLowerCase().includes(search.toLowerCase());
+    const matchName = String(product.name ?? "").toLowerCase().includes(search.toLowerCase());
     const matchSub =
       subcategory === "" || product.subcategories?.includes(subcategory);
     const matchPrice =
