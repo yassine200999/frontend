@@ -13,19 +13,32 @@ function Catalogue() {
   const [maxPrice, setMaxPrice] = useState("");
 
   // Chargement au démarrage de la page (une seule fois grâce à [])
-  useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        const data = await getAllProducts();
-        setProducts(Array.isArray(data) ? data : data["list product"] ?? []);
-      } catch (err) {
-        setError(getErrorMessage(err, "Impossible de charger les produits."));
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadProducts();
-  }, []);
+
+useEffect(() => {
+  const loadProducts = async () => {
+    try {
+      const data = await getAllProducts();
+
+      console.log("Réponse API produits :", data);
+
+      const products = Array.isArray(data)
+        ? data
+        : data?.["list product"] ??
+          data?.results ??
+          data?.products ??
+          [];
+
+      setProducts(products);
+    } catch (err) {
+      console.error("Erreur chargement produits :", err);
+      setError(getErrorMessage(err, "Impossible de charger les produits."));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  loadProducts();
+}, []);
 
   // Liste des sous-catégories déduite des produits (sans doublons)
   const subcategories = [

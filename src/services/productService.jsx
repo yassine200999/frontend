@@ -13,7 +13,7 @@ export const getAllProducts = async () => {
 export const getProductById = async (productId) => {
   try {
     const response = await axios.get(
-      `/products/get_product/${productId}/`,
+      `/products/get_product/${productId}/`
     );
     return response.data;
   } catch (error) {
