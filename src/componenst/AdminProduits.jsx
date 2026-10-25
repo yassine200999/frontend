@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import {
   getAllCategories,
   getSubcategoriesByCategory,
-} from "../../services/categoryService";
-import { createProduct } from "../../services/productService";
-import { getErrorMessage } from "../../services/errors";
+} from "../services/categoryService";
+import { createProduct } from "../services/productService";
+import { getErrorMessage } from "../services/errors";
 
 const AdminProduitForm = () => {
   const [form, setForm] = useState({ name: "", price: "" });
