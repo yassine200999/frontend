@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getAllProducts } from "../../services/productService";
 import { getErrorMessage } from "../../services/errors";
-import ProductCard from "../../components/productCard/ProductCard";
+import ProductCard from "../../componenst/productCard/ProductCard";
 function Catalogue() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
