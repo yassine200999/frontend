@@ -1,7 +1,5 @@
 import axios from "axios";
-
 const api = axios.create({ baseURL: "" });
-
 export async function signin(credentials) {
   const response = await api.post("/auth/signin", credentials);
   if (response.data?.token) {

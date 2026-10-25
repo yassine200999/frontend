@@ -1,28 +1,47 @@
-import { Routes } from 'react-router-dom'
-import Layout from './componenst/laypout/Layout'
-import { Route } from 'react-router-dom'
-import Catalogue from './pages/catalogue/Catalogue'
-import Panier from './pages/panier/Panier'
-import ProduitDetail from './pages/produitDetail/ProduitDetail'
-import Profils from './pages/profil/Profils'
-import Connection from './pages/connection/Connection'
+import { Navigate, Route, Routes } from "react-router-dom";
+import Layout from "./components/layout/Layout";
+import Catalogue from "./pages/catalogue/Catalogue";
+import ProduitDetail from "./pages/produitDetail/ProduitDetail";
+import Panier from "./pages/panier/Panier";
+import Profil from "./pages/profil/Profil";
+import Connexion from "./pages/connexion/Connexion";
+import ProtectedRoute from "./components/protectedRoute/ProtectedRoute";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminRoute from "./components/protectedRoute/AdminRoute";
+import AdminProduits from "./pages/admin/AdminProduits";
+import AdminProduitForm from "./pages/admin/AdminProduitForm";
+
 function App() {
-  // const [count, setCount] = useState(0)
-  //   useEffect(() => {
-  //   fetch('category/get_all_categories')
-  //     .then(response => response.json())
-  //     .then(data => console.log(data));
-  // }, []);
   return (
-    <>
     <Routes>
-      <Route element={ <Layout />} >
-      <Route path="/" element={<Catalogue />} />
-      <Route path="/produit/:id" element={<ProduitDetail />} />
-      <Route path="/panier" element={<Panier />} />
-      <Route path="/profil" element={<Profils />} />
-      <Route path="/connection" element={<Connection />} /></Route>
+      <Route element={<Layout />}>
+        <Route path="/" element={<Catalogue />} />
+        <Route path="/produit/:id" element={<ProduitDetail />} />
+        <Route path="/panier" element={<Panier />} />
+        <Route path="/connexion" element={<Connexion />} />
+        <Route
+          path="/profil"
+          element={
+            <ProtectedRoute>
+              <Profil />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminLayout />
+            </AdminRoute>
+          }
+        >
+          <Route index element={<Navigate to="produits" replace />} />
+          <Route path="produits" element={<AdminProduits />} />
+          <Route path="produits/nouveau" element={<AdminProduitForm />} />
+        </Route>
+      </Route>
     </Routes>
-    </>
-)}
-export default App
+  );
+}
+
+export default App;

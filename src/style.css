@@ -721,3 +721,12 @@ table.table {
     /* chaque champ grandit, minimum 180px */
     margin-bottom: 0;
 }
+
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    /* passe à la ligne si trop de boutons */
+    justify-content: center;
+    gap: 8px;
+    margin: 24px 0;
+}
