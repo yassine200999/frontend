@@ -11,34 +11,23 @@ function Navbar() {
       await logout();
     } finally {
       setUser(null);
-      navigate("/connection");
+      navigate("/connexion");
     }
   }
 
   return (
     <header className="nafbar">
-      <Link to="/" className="logo">
-        MaBoutique
-      </Link>
-
+      <Link to="/" className="logo">MaBoutique</Link>
       <nav>
-        <NavLink to="/" end>
-          Catalogue
-        </NavLink>
-        <NavLink to="/panier">
-          Panier <span className="cart-count">0</span>
-        </NavLink>
+        <NavLink to="/" end>Catalogue</NavLink>
+        <NavLink to="/panier">Panier <span className="cart-count">0</span></NavLink>
         {isAuthenticated ? (
           <>
             <NavLink to="/profil">Profil</NavLink>
-            <button type="button" className="btn btn-sm" onClick={handleLogout}>
-              Déconnexion
-            </button>
+            <button type="button" className="btn btn-sm" onClick={handleLogout}>Déconnexion</button>
           </>
         ) : (
-          <NavLink to="/connection" className="btn btn-primary btn-sm">
-            Connexion
-          </NavLink>
+          <NavLink to="/connexion" className="btn btn-primary btn-sm">Connexion</NavLink>
         )}
       </nav>
     </header>
