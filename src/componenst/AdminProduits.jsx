@@ -105,7 +105,7 @@ const AdminProduitForm = () => {
     formData.append("name", form.name.trim());
     formData.append("price", form.price);
     // Clé répétée : une ligne "subcategories" par id (comme dans Postman)
-    selectedSubs.forEach((sub) => formData.append("subcategories", sub.id));
+    selectedSubs.forEach((sub) => formData.append("subcategory", sub.id));
     // Idem pour les images : une ligne "images" par fichier
     images.forEach((file) => formData.append("images", file));
 
