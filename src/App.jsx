@@ -6,9 +6,9 @@ import Panier from "./pages/panier/Panier";
 import Profil from "./pages/profil/Profils";
 import Connexion from "./pages/connection/Connection";
 import ProtectedRoute from "./componenst/protectedRoute/ProtectedRoute";
-import AdminLayout from "./componenst/AdminLayout";
+import AdminProduitsList from "./componenst/AdminLayout";
 import AdminRoute from "./componenst/protectedRoute/AdminRoute";
-import AdminProduits from "./componenst/AdminProduits";
+import AdminProduitForm from "./componenst/AdminProduits";
 
 function App() {
   return (
@@ -19,10 +19,9 @@ function App() {
         <Route path="/panier" element={<Panier />} />
         <Route path="/connexion" element={<Connexion />} />
         <Route path="/profil" element={<ProtectedRoute><Profil /></ProtectedRoute>} />
-        <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
-          <Route index element={<Navigate to="produits" replace />} />
-          <Route path="produits" element={<AdminProduits />} />
-        </Route>
+        <Route path="/admin" element={<AdminRoute><Navigate to="/admin/produits" replace /></AdminRoute>} />
+        <Route path="/admin/produits" element={<AdminRoute><AdminProduitsList /></AdminRoute>} />
+        <Route path="/admin/produits/nouveau" element={<AdminRoute><AdminProduitForm /></AdminRoute>} />
       </Route>
     </Routes>
   );
