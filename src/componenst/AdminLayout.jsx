@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import ProductImage from "../../components/productImage/ProductImage";
-import { deleteProduct, getAllProducts } from "../../services/productService";
-import { getErrorMessage } from "../../services/errors";
+import ProductImage from "../productedImage/ProductImage";
+import { deleteProduct, getAllProducts } from "../services/productService";
+import { getErrorMessage } from "../services/errors";
 import { Link } from "react-router-dom";
 
 const AdminProduits = () => {
