@@ -1,7 +1,7 @@
 const getImageUrl = (src) => {
   if (!src) return "";
 
-  const value = String(src).replace(/\\\\/g, "/");
+  const value = String(src).split("\\").join("/");
 
   if (/^(https?:|data:|blob:)/i.test(value)) {
     return value;
@@ -13,10 +13,14 @@ const getImageUrl = (src) => {
   }
 
   if (value.toLowerCase().startsWith("media/")) {
-    return `/${value}`;
+    return \`/\${value}\`;
   }
 
-  return `/${value.replace(/^\\/+/, "")}`;
+  let path = value;
+  while (path.startsWith("/")) {
+    path = path.slice(1);
+  }
+  return \`/\${path}\`;
 };
 
 export { getImageUrl };
