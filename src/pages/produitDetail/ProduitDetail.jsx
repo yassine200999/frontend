@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getProductById } from "../../services/productService";
 import { getErrorMessage } from "../../services/errors";
-import ProductImage from "../../componenst/productedImage/ProductImage";
+import ProductImage from "../../components/productImage/ProductImage";
 
 function ProduitDetail() {
   const { id } = useParams();
