@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getProductById } from "../../services/productService";
 import { getErrorMessage } from "../../services/errors";
 import { Link, useParams } from "react-router-dom";
-import ProductImage from "../../componenst/productedImage/ProductImage";
+import ProductImage from "../productImage/ProductImage";
 
 function ProduitDetail() {
   const { id } = useParams(); // lit le :id de l'URL /produit/:id

@@ -11,7 +11,7 @@ const emptySignup = {
   password: "",
 };
 
-function Connection() {
+function Connexion() {
   const navigate = useNavigate();
   const { setUser } = useAuth();
 
@@ -249,4 +249,4 @@ function Connection() {
   );
 }
 
-export default Connection;
+export default Connexion;

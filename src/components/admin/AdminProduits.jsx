@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ProductImage from "../../components/productImage/ProductImage";
+import ProductImage from "../productImage/ProductImage";
 import { deleteProduct, getAllProducts } from "../../services/productService";
 import { getErrorMessage } from "../../services/errors";
 import { Link } from "react-router-dom";
@@ -17,7 +17,7 @@ const AdminProduits = () => {
     const loadProducts = async () => {
       try {
         const data = await getAllProducts();
-        setProducts(data["list product"] ?? []);
+        setProducts(Array.isArray(data) ? data : data?.["list product"] ?? []);
       } catch (err) {
         setLoadError(
           getErrorMessage(err, "Impossible de charger les produits."),
@@ -88,7 +88,7 @@ const AdminProduits = () => {
                 <tr key={product.id}>
                   <td>
                     <ProductImage
-                      src={product.images?.[0]}
+                      src={product.images?.[0]?.image_url ?? product.images?.[0]}
                       alt={product.name}
                       width={60}
                     />

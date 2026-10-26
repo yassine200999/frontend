@@ -5,6 +5,9 @@ import { logout } from "../../services/authService.jsx";
 function Navbar() {
   const { isAuthenticated, user, setUser } = useAuth();
   const navigate = useNavigate();
+  const isAdmin = Boolean(
+    user?.is_admin || user?.admin || user?.is_staff || user?.is_superuser
+  );
 
   async function handleLogout() {
     try {
@@ -16,30 +19,16 @@ function Navbar() {
   }
 
   return (
-    <header className="nafbar">
+    <header className="navbar">
       <Link to="/" className="logo">MaBoutique</Link>
-
       <nav>
         <NavLink to="/" end>Catalogue</NavLink>
-
-        <NavLink to="/panier">
-          Panier <span className="cart-count">0</span>
-        </NavLink>
-
-
-
+        <NavLink to="/panier">Panier</NavLink>
         {isAuthenticated ? (
           <>
-        {isAuthenticated && user?.is_admin && (
-          <NavLink to="/admin">Administration</NavLink>
-        )}
+            {isAdmin && <NavLink to="/admin">Administration</NavLink>}
             <NavLink to="/profil">Profil</NavLink>
-
-            <button
-              type="button"
-              className="btn btn-sm"
-              onClick={handleLogout}
-            >
+            <button type="button" className="btn btn-sm" onClick={handleLogout}>
               Déconnexion
             </button>
           </>
