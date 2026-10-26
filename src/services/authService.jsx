@@ -30,6 +30,10 @@ export async function logout() {
         headers: { Authorization: `Bearer ${token}` },
       });
     }
+  } catch (error) {
+    if (error.response?.status !== 401) {
+      throw error;
+    }
   } finally {
     localStorage.removeItem("token");
     localStorage.removeItem("currentUser");
