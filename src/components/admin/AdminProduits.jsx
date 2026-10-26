@@ -17,7 +17,7 @@ const AdminProduits = () => {
     const loadProducts = async () => {
       try {
         const data = await getAllProducts();
-        setProducts(Array.isArray(data) ? data : data?.["list product"] ?? []);
+        setProducts(data);
       } catch (err) {
         setLoadError(
           getErrorMessage(err, "Impossible de charger les produits."),
