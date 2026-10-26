@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getImageUrl } from "../../utils/getImageUrl";
 
 // Image de remplacement (SVG intégré, aucun fichier à ajouter)
@@ -14,6 +14,10 @@ const PLACEHOLDER =
 
 const ProductImage = ({ src, alt, ...props }) => {
   const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    setFailed(false);
+  }, [src]);
 
   return (
     <img
