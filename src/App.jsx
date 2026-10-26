@@ -10,6 +10,7 @@ import AdminLayout from "./components/admin/AdminLayout";
 import AdminRoute from "./components/protectedRoute/AdminRoute";
 import AdminProduits from "./components/admin/AdminProduits";
 import AdminProduitNouveau from "./components/admin/AdminProduitNouveau";
+import AdminProduitModifier from "./components/admin/AdminProduitModifier";
 import AdminCategories from "./components/admin/AdminCategories";
 import AdminSousCategories from "./components/admin/AdminSousCategories";
 
@@ -26,10 +27,12 @@ function App() {
           <Route index element={<Navigate to="produits" replace />} />
           <Route path="produits" element={<AdminProduits />} />
           <Route path="produits/nouveau" element={<AdminProduitNouveau />} />
+          <Route path="produits/:id/modifier" element={<AdminProduitModifier />} />
           <Route path="categories" element={<AdminCategories />} />
           <Route path="categories/:categoryId/sous-categories" element={<AdminSousCategories />} />
         </Route>
       </Route>
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
