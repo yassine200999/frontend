@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getImageUrl } from "../../utils/getImageUrl";
 
-// Image de remplacement (SVG intégré, aucun fichier à ajouter)
 const PLACEHOLDER =
   "data:image/svg+xml;utf8," +
   encodeURIComponent(
@@ -15,10 +14,17 @@ const PLACEHOLDER =
 const ProductImage = ({ src, alt, ...props }) => {
   const [failed, setFailed] = useState(false);
 
+  const imagePath =
+    typeof src === "string" ? src : src?.image_url || src?.url || src?.image;
+
+  useEffect(() => {
+    setFailed(false);
+  }, [imagePath]);
+
   return (
     <img
-      src={failed || !src ? PLACEHOLDER : getImageUrl(src)}
-      alt={alt}
+      src={!imagePath || failed ? PLACEHOLDER : getImageUrl(imagePath)}
+      alt={alt || ""}
       onError={() => setFailed(true)}
       {...props}
     />
