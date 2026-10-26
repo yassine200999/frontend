@@ -1,16 +1,17 @@
+
 import axios from "axios";
-
 const API = "/products";
-
+const getAuthHeaders = () => ({
+  Authorization: `Bearer ${localStorage.getItem("token")}`,
+});
 function normalizeProducts(payload) {
   if (Array.isArray(payload)) return payload;
   if (Array.isArray(payload?.["list product"])) return payload["list product"];
   if (Array.isArray(payload?.results)) return payload.results;
   throw new Error(
-    "Réponse API invalide : vérifiez que /products/get_all_products/ renvoie du JSON et que le proxy Vite est actif.",
+    "Réponse API invalide : vérifiez /products/get_all_products/ et le proxy Vite.",
   );
 }
-
 export const getAllProducts = async () => {
   try {
     const response = await axios.get(`${API}/get_all_products/`);
@@ -34,7 +35,7 @@ export const getProductById = async (productId) => {
 export const createProduct = async (formData) => {
   try {
     const response = await axios.post(`${API}/create_product/`, formData, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      headers: getAuthHeaders(),
     });
     return response.data;
   } catch (error) {
@@ -46,7 +47,7 @@ export const createProduct = async (formData) => {
 export const deleteProduct = async (id) => {
   try {
     await axios.delete(`${API}/delete_product/${id}/`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      headers: getAuthHeaders(),
     });
   } catch (error) {
     console.error("Erreur suppression produit :", error);
@@ -56,10 +57,18 @@ export const deleteProduct = async (id) => {
 
 export const updateProduct = async (id, formData) => {
   try {
-    const response = await axios.patch(`${API}/update_product/${id}/`, formData, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    });
-    if (response.data?.error) throw new Error(JSON.stringify(response.data.error));
+    const response = await axios.patch(
+      `${API}/update_product/${id}/`,
+      formData,
+      {
+        headers: getAuthHeaders(),
+      },
+    );
+
+    if (response.data?.error) {
+      throw new Error(JSON.stringify(response.data.error));
+    }
+
     return response.data;
   } catch (error) {
     console.error("Erreur modification produit :", error);
