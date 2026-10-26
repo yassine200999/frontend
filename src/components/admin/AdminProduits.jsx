@@ -54,6 +54,9 @@ const AdminProduits = () => {
     }
   };
 
+  if (loading) return <p className="muted">Chargement des produits...</p>;
+  if (loadError) return <p className="error-box">{loadError}</p>;
+
   return (
     <>
       {/* .row-between existe dans ton CSS : titre à gauche, bouton à droite */}
