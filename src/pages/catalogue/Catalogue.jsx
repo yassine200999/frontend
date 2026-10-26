@@ -22,7 +22,7 @@ function Catalogue() {
     const loadProducts = async () => {
       try {
         const data = await getAllProducts();
-        setProducts(Array.isArray(data) ? data : data["list product"] ?? []);
+        setProducts(data);
       } catch (err) {
         setError(getErrorMessage(err, "Impossible de charger les produits."));
       } finally {
@@ -43,7 +43,7 @@ function Catalogue() {
 
   // Application des filtres
   const filteredProducts = products.filter((product) => {
-    const matchName = product.name.toLowerCase().includes(search.toLowerCase());
+    const matchName = String(product.name ?? "").toLowerCase().includes(search.toLowerCase());
     const matchSub =
       subcategory === "" || product.subcategories?.includes(subcategory);
     const matchPrice =
