@@ -3,7 +3,7 @@ import { useAuth } from "../../context/AuthContext.jsx";
 import { logout } from "../../services/authService.jsx";
 
 function Navbar() {
-  const { isAuthenticated, setUser } = useAuth();
+  const { isAuthenticated, user, setUser } = useAuth();
   const navigate = useNavigate();
 
   async function handleLogout() {
@@ -18,16 +18,35 @@ function Navbar() {
   return (
     <header className="nafbar">
       <Link to="/" className="logo">MaBoutique</Link>
+
       <nav>
         <NavLink to="/" end>Catalogue</NavLink>
-        <NavLink to="/panier">Panier <span className="cart-count">0</span></NavLink>
+
+        <NavLink to="/panier">
+          Panier <span className="cart-count">0</span>
+        </NavLink>
+
+
+
         {isAuthenticated ? (
           <>
+        {isAuthenticated && user?.is_admin && (
+          <NavLink to="/admin">Administration</NavLink>
+        )}
             <NavLink to="/profil">Profil</NavLink>
-            <button type="button" className="btn btn-sm" onClick={handleLogout}>Déconnexion</button>
+
+            <button
+              type="button"
+              className="btn btn-sm"
+              onClick={handleLogout}
+            >
+              Déconnexion
+            </button>
           </>
         ) : (
-          <NavLink to="/connexion" className="btn btn-primary btn-sm">Connexion</NavLink>
+          <NavLink to="/connexion" className="btn btn-primary btn-sm">
+            Connexion
+          </NavLink>
         )}
       </nav>
     </header>
