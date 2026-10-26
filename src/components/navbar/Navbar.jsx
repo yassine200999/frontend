@@ -5,6 +5,9 @@ import { logout } from "../../services/authService.jsx";
 function Navbar() {
   const { isAuthenticated, user, setUser } = useAuth();
   const navigate = useNavigate();
+  const isAdmin = Boolean(
+    user?.is_admin || user?.admin || user?.is_staff || user?.is_superuser
+  );
 
   async function handleLogout() {
     try {
@@ -23,7 +26,7 @@ function Navbar() {
         <NavLink to="/panier">Panier</NavLink>
         {isAuthenticated ? (
           <>
-            {user?.is_admin && <NavLink to="/admin">Administration</NavLink>}
+            {isAdmin && <NavLink to="/admin">Administration</NavLink>}
             <NavLink to="/profil">Profil</NavLink>
             <button type="button" className="btn btn-sm" onClick={handleLogout}>
               Déconnexion
