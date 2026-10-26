@@ -1,87 +1,142 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
+  createSubcategory,
+  deleteSubcategory,
   getAllCategories,
   getSubcategoriesByCategory,
+  updateSubcategory,
 } from "../../services/categoryService";
 import { getErrorMessage } from "../../services/errors";
 
 const AdminSousCategories = () => {
-  // identifiant de la catégorie parente, pris dans l'adresse (toujours du texte)
   const { categoryId } = useParams();
-
-  // ---------- données de la page ----------
-  const [category, setCategory] = useState(null); // la catégorie parente (pour afficher son nom)
-  const [subcategories, setSubcategories] = useState([]); // ses sous-catégories
+  const [category, setCategory] = useState(null);
+  const [subcategories, setSubcategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
-
-  // ---------- formulaire ----------
-  const [name, setName] = useState(""); // champ nom
-  const [editing, setEditing] = useState(null); // null = ajout ; sinon la sous-catégorie modifiée
+  const [name, setName] = useState("");
+  const [editing, setEditing] = useState(null);
   const [saving, setSaving] = useState(false);
-
-  // ---------- messages ----------
   const [actionError, setActionError] = useState("");
   const [success, setSuccess] = useState("");
   const [deletingId, setDeletingId] = useState(null);
 
-  // Fonction réutilisée au chargement ET après un ajout : relire les sous-catégories
-  const loadSubcategories = async () => {
-    setSubcategories(await getSubcategoriesByCategory(categoryId));
-  };
+  const loadSubcategories = useCallback(async () => {
+    const data = await getSubcategoriesByCategory(categoryId);
+    setSubcategories(data);
+  }, [categoryId]);
 
   useEffect(() => {
+    let active = true;
     const load = async () => {
+      setLoading(true);
+      setLoadError("");
       try {
-        // on cherche le parent dans la liste des catégories (l'adresse ne donne que son id)
-        const categories = await getAllCategories();
-        // Number() : l'id de l'adresse est du texte, celui de l'API est un nombre
-        setCategory(
-          categories.find((c) => c.id === Number(categoryId)) || null,
-        );
-        // puis ses sous-catégories (le backend répond 404 si la catégorie n'existe pas)
-        await loadSubcategories();
+        const [categories, subs] = await Promise.all([
+          getAllCategories(),
+          getSubcategoriesByCategory(categoryId),
+        ]);
+        if (!active) return;
+        setCategory(categories.find((item) => Number(item.id) === Number(categoryId)) ?? null);
+        setSubcategories(subs);
       } catch (err) {
-        setLoadError(
-          getErrorMessage(err, "Impossible de charger cette catégorie."),
-        );
+        if (active) setLoadError(getErrorMessage(err, "Impossible de charger cette catégorie."));
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     };
     load();
+    return () => { active = false; };
   }, [categoryId]);
-  const handleSubmit = async (e) => {};
-  const startEdit = (sub) => {};
-  const resetForm = () => {};
-  const handleDelete = async (sub) => {};
+
+  const resetForm = () => {
+    setName("");
+    setEditing(null);
+  };
+
+  const startEdit = (subcategory) => {
+    setEditing(subcategory);
+    setName(subcategory.name);
+    setActionError("");
+    setSuccess("");
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setActionError("");
+    setSuccess("");
+    if (!name.trim()) {
+      setActionError("Le nom est obligatoire.");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      if (editing) {
+        await updateSubcategory(editing.id, { name: name.trim(), category: categoryId });
+        setSuccess("Sous-catégorie modifiée.");
+      } else {
+        await createSubcategory({ name: name.trim(), category: categoryId });
+        setSuccess("Sous-catégorie ajoutée.");
+      }
+      resetForm();
+      await loadSubcategories();
+    } catch (err) {
+      setActionError(getErrorMessage(err, "Enregistrement impossible."));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async (subcategory) => {
+    if (!window.confirm(`Supprimer la sous-catégorie « ${subcategory.name} » ?`)) return;
+    setActionError("");
+    setSuccess("");
+    setDeletingId(subcategory.id);
+    try {
+      await deleteSubcategory(subcategory.id);
+      setSubcategories((current) => current.filter((item) => item.id !== subcategory.id));
+      if (editing?.id === subcategory.id) resetForm();
+      setSuccess(`Sous-catégorie « ${subcategory.name} » supprimée.`);
+    } catch (err) {
+      setActionError(getErrorMessage(err, "Suppression impossible."));
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   if (loading) return <p className="muted">Chargement...</p>;
   if (loadError) return <p className="error-box">{loadError}</p>;
+  if (!category) {
+    return (
+      <section>
+        <p className="error-box">Catégorie introuvable.</p>
+        <Link to="/admin/categories">Retour aux catégories</Link>
+      </section>
+    );
+  }
 
   return (
     <>
       <p className="breadcrumb">
-        <Link to="/admin/categories">Catégories</Link> / {category?.name}
+        <Link to="/admin/categories">Catégories</Link> / {category.name}
       </p>
-      {/* ?. : au cas où la catégorie n'a pas été trouvée */}
-      <h1>
-        Sous-catégories de « {category?.name} » ({subcategories.length})
-      </h1>
+      <h1>Sous-catégories de « {category.name} » ({subcategories.length})</h1>
 
       {actionError && <p className="error-box">{actionError}</p>}
       {success && <p className="success">{success}</p>}
 
       <form className="form" onSubmit={handleSubmit}>
-        <h3>
-          {editing
-            ? `Modifier « ${editing.name} »`
-            : "Ajouter une sous-catégorie"}
-        </h3>
+        <h3>{editing ? `Modifier « ${editing.name} »` : "Ajouter une sous-catégorie"}</h3>
         <div className="form-group">
-          <label>Nom</label>
-          <input value={name} onChange={(e) => setName(e.target.value)} />
+          <label htmlFor="subcategory-name">Nom</label>
+          <input
+            id="subcategory-name"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            required
+          />
         </div>
         <div className="row">
           <button type="submit" className="btn btn-primary" disabled={saving}>
@@ -95,37 +150,29 @@ const AdminSousCategories = () => {
         </div>
       </form>
 
-      {/* liste vide : message plutôt qu'un tableau vide */}
       {subcategories.length === 0 ? (
         <p className="muted">Aucune sous-catégorie pour le moment.</p>
       ) : (
         <div className="table-wrapper">
           <table className="table">
             <thead>
-              <tr>
-                <th>Nom</th>
-                <th>Actions</th>
-              </tr>
+              <tr><th>Nom</th><th>Actions</th></tr>
             </thead>
             <tbody>
-              {subcategories.map((sub) => (
-                <tr key={sub.id}>
-                  <td>{sub.name}</td>
+              {subcategories.map((subcategory) => (
+                <tr key={subcategory.id}>
+                  <td>{subcategory.name}</td>
                   <td className="actions">
-                    <button
-                      type="button"
-                      className="btn btn-sm"
-                      onClick={() => startEdit(sub)}
-                    >
+                    <button type="button" className="btn btn-sm" onClick={() => startEdit(subcategory)}>
                       Modifier
                     </button>
                     <button
                       type="button"
                       className="btn btn-sm btn-danger"
-                      disabled={deletingId === sub.id}
-                      onClick={() => handleDelete(sub)}
+                      disabled={deletingId === subcategory.id}
+                      onClick={() => handleDelete(subcategory)}
                     >
-                      {deletingId === sub.id ? "Suppression..." : "Supprimer"}
+                      {deletingId === subcategory.id ? "Suppression..." : "Supprimer"}
                     </button>
                   </td>
                 </tr>
