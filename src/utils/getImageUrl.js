@@ -13,14 +13,14 @@ const getImageUrl = (src) => {
   }
 
   if (value.toLowerCase().startsWith("media/")) {
-    return \`/\${value}\`;
+    return "/" + value;
   }
 
   let path = value;
   while (path.startsWith("/")) {
     path = path.slice(1);
   }
-  return \`/\${path}\`;
+  return "/" + path;
 };
 
 export { getImageUrl };
