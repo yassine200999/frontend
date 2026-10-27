@@ -3,13 +3,16 @@ import { Link, useParams } from "react-router-dom";
 import { getProductById } from "../../services/productService";
 import { getErrorMessage } from "../../services/errors";
 import ProductImage from "../../components/productImage/ProductImage";
+import { useCart } from "../../context/CartContext.jsx";
 
 function ProduitDetail() {
   const { id } = useParams();
+  const { addToCart } = useCart();
   const [product, setProduct] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [currentImage, setCurrentImage] = useState(0);
+  const [added, setAdded] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -42,42 +45,61 @@ function ProduitDetail() {
 
   const images = product.images ?? [];
 
+  const handleAddToCart = () => {
+    addToCart(product);
+    setAdded(true);
+  };
+
   return (
     <section className="product-detail">
-      <Link to="/">← Retour au catalogue</Link>
-      <h1>{product.name}</h1>
-      <p className="price">{product.price} DT</p>
+      <div className="gallery">
+        <Link to="/">← Retour au catalogue</Link>
+        <ProductImage
+          src={images[currentImage]?.image_url ?? images[currentImage]}
+          alt={product.name}
+          className="gallery-main"
+        />
 
-      <ProductImage
-        src={images[currentImage]?.image_url}
-        alt={product.name}
-        style={{ maxWidth: 400, width: "100%" }}
-      />
+        {images.length > 1 && (
+          <div className="gallery-thumbs">
+            {images.map((img, index) => (
+              <button
+                key={img.id ?? index}
+                type="button"
+                onClick={() => setCurrentImage(index)}
+                aria-label={`Afficher l’image ${index + 1}`}
+              >
+                <ProductImage
+                  src={img.image_url ?? img}
+                  alt=""
+                  className={index === currentImage ? "active" : ""}
+                />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
 
-      {images.length > 1 && (
-        <div style={{ display: "flex", gap: 8, margin: "12px 0", flexWrap: "wrap" }}>
-          {images.map((img, index) => (
-            <button
-              key={img.id ?? index}
-              type="button"
-              onClick={() => setCurrentImage(index)}
-              aria-label={`Afficher l’image ${index + 1}`}
-              style={{ border: 0, padding: 0, background: "transparent", cursor: "pointer" }}
-            >
-              <ProductImage
-                src={img.image_url}
-                alt=""
-                width={70}
-                style={{ opacity: index === currentImage ? 1 : 0.55 }}
-              />
-            </button>
-          ))}
-        </div>
-      )}
+      <div className="product-info">
+        <h1>{product.name}</h1>
+        <p className="price">{Number(product.price || 0).toFixed(2)} DT</p>
 
-      {product.subcategories?.length > 0 && (
-        <p>Sous-catégories : {product.subcategories.join(", ")}</p>
-      )}
+        {product.subcategories?.length > 0 && (
+          <p>Sous-catégories : {product.subcategories.join(", ")}</p>
+        )}
+
+        <button type="button" className="btn btn-primary" onClick={handleAddToCart}>
+          Ajouter au panier
+        </button>
+
+        {added && (
+          <p className="success">
+            Produit ajouté au panier.
+            {" "}
+            <Link to="/panier">Voir le panier</Link>
+          </p>
+        )}
+      </div>
     </section>
   );
 }
