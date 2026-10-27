@@ -10,7 +10,7 @@ function Panier() {
   return (
     <section>
       <div className="row-between">
-        <h1>Mon panier</h1>
+        <h1>Panier <span className="cart-count">({totalCount})</span></h1>
         {items.length > 0 && (
           <button type="button" className="btn btn-danger" onClick={clearCart}>
             Vider le panier
